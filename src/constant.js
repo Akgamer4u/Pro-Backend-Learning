@@ -1,3 +1,3 @@
-const DB_NAME="VIDEO PLAYER";
+const DB_NAME="VIDEOPLAYER";
 
-export default DB_NAME
+export {DB_NAME}

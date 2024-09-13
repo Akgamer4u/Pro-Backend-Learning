@@ -27,40 +27,39 @@ const registerUser = asyncHandler(async (req, res) => {
         $or:[{username},{email}]
      })
 
-     console.log(existedUser)
+  
 
      if(existedUser){
         throw new ApiError(409,"User already exists")
      }
 
-     const avatarLocalPath=req.fiels?.avatar[0]?.path;
-     const coverImageLocalPath=req.fiels?.coverImage[0]?.path;
-
-     if(!avatarLocalPath){
-        throw new ApiError(400,"Avatar file is required")
-     }
+     const avatarLocalPath=req.files?.avatar[0]?.path
+     const coverImageLocalPath=req.files?.coverImage[0]?.path
      
-     const avatar=await uploadOnCloudinary(avatarLocalPath)
-     const coverImage=await uploadOnCloudinary(coverImageLocalPath)
-      console.log(avatar.url,coverImage.url)
+     if(!avatarLocalPath){
+        throw new ApiError(400,"Avatar is very required")
+     }
 
-      if(!avatar){
-        throw new ApiError(400,"Avatar file is required")
+      const userAvatar=await uploadOnCloudinary(avatarLocalPath)
+      const userCoverImage=await uploadOnCloudinary(coverImageLocalPath)
+
+      if(!userAvatar){
+        throw new ApiError(400,"Avatar is required")
       }
 
-      const user= await User.create({
+       const user= await User.create({
         fullName,
         username:username.toLowerCase(),
         email,
         password,
-        avatar:avatar.url,
-        coverImage:coverImage?.url || ""
+        avatar:userAvatar.url,
+        coverImage:userCoverImage?.url || "",
       })
 
-      console.log(user)
+     
 
       const createdUser=await User.findById(user._id).select("-password -refreshToken")
-      console.log(createdUser)
+      
 
       if(!createdUser){
         throw new ApiError(500,"Something went wrong while creating user")
