@@ -29,7 +29,7 @@ const userSchema = new Schema(
       type: String, //third party cloud service using
       required: true,
     },
-    avatar: {
+    coverImage: {
       type: String,
     },
     watchHistory: {
