@@ -1,6 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const userSchema = new Schema(
   {
@@ -44,7 +47,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Please provide a password"],
     },
-    refreshToken: {
+    refreshTokens: {
       type: String,
     },
   },
@@ -61,7 +64,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.isPasswortCorrect = async function (password) {
+userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
@@ -78,9 +81,9 @@ userSchema.methods.generateAccessToken = function () {
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     { _id: this._id },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFERSH_TOKEN_SECRET,
     {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+      expiresIn: process.env.REFERSH_TOKEN_EXPIRY,
     }
   );
 };
