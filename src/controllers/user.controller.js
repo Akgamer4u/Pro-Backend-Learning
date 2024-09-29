@@ -6,6 +6,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 
 
+
 const generateAccessAndRefereshTokens = async(userId) =>{
    try {
        const user=await User.findById(userId)
@@ -182,6 +183,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 const refereshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken
 
+    console.log(incomingRefreshToken)
+
     if(!incomingRefreshToken){
         throw new ApiError(401,"unauthorized request")
     }
@@ -208,6 +211,8 @@ const refereshAccessToken = asyncHandler(async (req, res) => {
     }
  
     const {accessToken,newRefreshToken}=await generateAccessAndRefereshTokens(user._id)
+
+    console.log(newRefreshToken)
  
     return res.status(200)
     .cookie("accessToken",accessToken,option)
